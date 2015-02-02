@@ -1,0 +1,25 @@
+---
+- name: installing phantomjs {{version}} dependencies
+  apt: "pkg={{item}} state=latest force=yes"
+  with_items:
+    - fontconfig
+
+- name: downloading phantomjs package version {{version}}
+  get_url:
+    url: https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-{{version}}-linux-x86_64.tar.bz2
+    dest: /usr/local/share/phantomjs-{{version}}-linux-x86_64.tar.bz2
+    force: no
+
+- name: unarchiving the phantomjs package version {{version}}
+  unarchive: >
+    src=/usr/local/share/phantomjs-{{version}}-linux-x86_64.tar.bz2
+    dest=/usr/local/share/
+    creates=/usr/local/share/phantomjs-{{version}}-linux-x86_64
+    copy=no
+
+- name: creating symbolic links for phantomjs
+  file: src=/usr/local/share/phantomjs-{{version}}-linux-x86_64/bin/phantomjs dest={{item}} state=link
+  with_items:
+    - /usr/local/share/phantomjs
+    - /usr/local/bin/phantomjs
+    - /usr/bin/phantomjs

@@ -1,0 +1,6 @@
+---
+- name: installing imagemagick packages
+  apt: "pkg={{item}} state=latest force=yes"
+  with_items:
+    - imagemagick
+    - libmagickwand-dev

@@ -1,0 +1,38 @@
+---
+- name: updating all packages to the latest version
+  apt: >
+    upgrade=dist
+    update_cache=yes
+    cache_valid_time=3600
+
+- name: installing base packages
+  apt: "pkg={{item}} state=latest force=yes"
+  with_items:
+    - build-essential
+    - openssl
+    - autoconf
+    - automake
+    - bison
+    - libc6-dev
+    - libffi-dev
+    - libreadline6
+    - libreadline6-dev
+    - curl
+    - libsqlite3-dev
+    - libssl-dev
+    - libtool
+    - libxml2-dev
+    - libxslt-dev
+    - libyaml-dev
+    - ncurses-dev
+    - zlib1g
+    - zlib1g-dev
+    - git-core
+    - sqlite3
+    - vim
+
+- name: generating en_US.UTF-8 locale files
+  locale_gen: name=en_US.UTF-8 state=present
+
+- name: setting locale to en_US.UTF-8
+  command: /usr/sbin/update-locale LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8

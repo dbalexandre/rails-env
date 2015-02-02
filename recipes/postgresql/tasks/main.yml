@@ -1,0 +1,51 @@
+---
+- name: adding postgresql repository
+  apt_repository: >
+    repo='deb http://apt.postgresql.org/pub/repos/apt/ trusty-pgdg main'
+    state=present
+
+- name: adding postgresql repository key
+  apt_key: url=https://www.postgresql.org/media/keys/ACCC4CF8.asc
+  sudo: yes
+
+- name: instaling postgresql {{version}} packages
+  apt: "pkg={{item}} state=latest force=yes"
+  with_items:
+    - postgresql-{{version}}
+    - postgresql-contrib-{{version}}
+    - postgresql-server-dev-{{version}}
+    - python-psycopg2
+
+- name: allowing access from host machine
+  lineinfile: >
+    dest=/etc/postgresql/{{version}}/main/pg_hba.conf
+    line='host all all 10.0.0.0/24 md5'
+    state=present
+  sudo: yes
+
+- name: listening on all interfaces
+  lineinfile: >
+    dest=/etc/postgresql/{{version}}/main/postgresql.conf
+    line="listen_addresses = '*'"
+    state=present
+  sudo: yes
+
+- name: adding postgres file to /etc/sudoers.d/
+  lineinfile: >
+    dest=/etc/sudoers.d/postgres owner=root group=root mode=0440
+    line="%vagrant ALL = (postgres) NOPASSWD: ALL"
+    state=present
+    create=yes
+    validate='visudo -cf %s'
+
+- name: creating database user {{database_user}}
+  sudo: yes
+  sudo_user: postgres
+  postgresql_user: >
+    name={{database_user}}
+    password={{database_password}}
+    role_attr_flags=CREATEDB,SUPERUSER
+    state=present
+
+- name: restarting postgresql service
+  service: name=postgresql state=restarted

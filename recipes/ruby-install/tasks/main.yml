@@ -1,0 +1,21 @@
+---
+- name: downloading ruby-install package version {{version}}
+  get_url:
+    url: https://github.com/postmodern/ruby-install/archive/v{{version}}.tar.gz
+    dest: /tmp/ruby-install-{{version}}.tar.gz
+    force: no
+
+- name: unarchiving the ruby-install package
+  unarchive: >
+    src=/tmp/ruby-install-{{version}}.tar.gz
+    dest=/tmp/
+    creates=/tmp/ruby-install-{{version}}
+    copy=no
+
+- name: installing ruby-install package
+  sudo: yes
+  command: make install chdir=/tmp/ruby-install-{{version}} creates=/usr/local/bin/ruby-install
+
+- name: building ruby {{ruby_version}}
+  command: /usr/local/bin/ruby-install ruby {{ruby_version}} creates=/opt/rubies/ruby-{{ruby_version}}
+  when: ruby_version is defined

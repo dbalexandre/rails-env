@@ -1,0 +1,6 @@
+---
+- name: installing redis packages
+  apt: "pkg={{item}} state=latest force=yes"
+  with_items:
+    - redis-server
+    - libhiredis-dev

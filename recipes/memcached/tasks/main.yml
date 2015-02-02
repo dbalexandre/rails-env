@@ -1,0 +1,6 @@
+---
+- name: installing memcached packages
+  apt: "pkg={{item}} state=latest force=yes"
+  with_items:
+    - memcached
+    - libmemcached-dev
