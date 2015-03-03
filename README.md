@@ -6,7 +6,7 @@
 - nodejs version: latest from official nodejs repository
 - phantomjs: 1.9.8
 - postgresql : 9.4.x from official postgresql repository
-- ruby: 2.2.0
+- ruby: 2.2.1
 - ruby-install: 0.5.0
 
 ### Set up the environment
